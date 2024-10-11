@@ -47,7 +47,7 @@ describe('First test suite', () => {
 
     })
 
-    it.only('save subject of the command', () => {
+    it('save subject of the command', () => {
         cy.visit('/')
         cy.contains('Forms').click()
         cy.contains('Form Layouts').click()
@@ -65,5 +65,56 @@ describe('First test suite', () => {
             cy.wrap(usingTheGridForm).find('[for="inputEmail1"]').should('contain', 'Email')
             cy.wrap(usingTheGridForm).find('[for="inputPassword2"]').should('contain', 'Password')
         })
+    })
+
+    it('extract text values', () => {
+        cy.visit('/')
+        cy.contains('Forms').click()
+        cy.contains('Form Layouts').click()
+
+        // 1
+        cy.get('[for="exampleInputEmail1"]').should('contain', 'Email address')
+
+        // 2
+        cy.get('[for="exampleInputEmail1"]').then(label => {
+            const labelText = label.text();
+            expect(labelText).to.equal('Email address')
+            cy.wrap(labelText).should('contain', 'Email address')
+        })
+
+        // 3
+        cy.get('[for="exampleInputEmail1"]').invoke('text').then(text => {
+            expect(text).to.equal('Email address')
+        })
+
+        // 4
+        cy.get('[for="exampleInputEmail1"]').invoke('text').as('labelText').should('contain', 'Email address')
+
+        // 5
+        cy.get('[for="exampleInputEmail1"]').invoke('attr', 'class').then(classValue => {
+            expect(classValue).to.equal('label')
+        })
+    })
+
+    it('work with radio', () => {
+        cy.visit('/')
+        cy.contains('Forms').click()
+        cy.contains('Form Layouts').click()
+
+        cy.contains('nb-card', 'Using the Grid').find('[type="radio"]').then(radioButtons => {
+            cy.wrap(radioButtons).eq(0).check({ force: true }).should('be.checked')
+            cy.wrap(radioButtons).eq(1).check({ force: true })
+            cy.wrap(radioButtons).eq(0).should('not.be.checked')
+            cy.wrap(radioButtons).eq(2).should('be.disabled')
+        })
+    })
+
+    it('work with checkbox', () => {
+        cy.visit('/')
+        cy.contains('Forms').click()
+        cy.contains('Form Layouts').click()
+
+        cy.get('[type="checkbox"]').eq(0).click({ force: true })
+        cy.get('[type="checkbox"]').eq(1).click({ force: true })
     })
 })

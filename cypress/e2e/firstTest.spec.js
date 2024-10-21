@@ -169,7 +169,7 @@ describe('First test suite', () => {
         cy.get('nb-tooltip').should('contain', 'This is a tooltip')
     })
 
-    it.only('dialog box (alerts and confirm boxes)', () => {
+    it('dialog box (alerts and confirm boxes)', () => {
         cy.visit('/')
         cy.contains('Tables & Data').click()
         cy.contains('Smart Table').click()
